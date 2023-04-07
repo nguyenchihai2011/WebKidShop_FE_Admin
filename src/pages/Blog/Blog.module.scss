@@ -1,0 +1,53 @@
+.blog {
+  padding: 20px;
+}
+.blog-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.blog-lable {
+  font-size: 2rem;
+}
+
+.blog-form-group {
+  font-size: 1.6rem;
+  align-items: center;
+}
+
+.blog-form-row {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.blog-form-col {
+  display: flex;
+  align-items: center;
+}
+
+.blog-form-lable {
+  color: #999;
+  font-weight: 300;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+.blog-form-input {
+  font-size: 1.6rem;
+}
+
+.blog-add-btn {
+  padding: 10px 20px;
+  font-size: 1.6rem;
+}
+
+.blog-form-btn {
+  font-size: 1.6rem;
+  padding: 5px 10px;
+}
+
+.blog-table {
+  vertical-align: middle;
+}

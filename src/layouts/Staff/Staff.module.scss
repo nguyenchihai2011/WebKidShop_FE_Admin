@@ -1,0 +1,138 @@
+.staff {
+}
+
+.staff-header {
+  border-bottom: 1px solid #ccc;
+}
+
+.header-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-img {
+  width: 30px;
+  margin: 0 4px;
+}
+
+.logo-name {
+  color: var(--primary-color);
+  font-size: 2.4rem;
+}
+
+.header-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-left: 1px solid #ccc;
+  padding: 30px 0;
+}
+
+.header-title-name {
+  text-transform: capitalize;
+  margin-left: 20px;
+  font-size: 2.4rem;
+}
+
+.header-search-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  width: 60%;
+  border-radius: 12px;
+  background-color: #eee;
+}
+
+.header-search-btn {
+  background-color: transparent;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border: none;
+}
+
+.header-search-icon {
+  font-size: 2rem;
+  padding: 10px 16px;
+  color: #a7a9ae;
+}
+
+.header-search-input {
+  color: #333;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.header-info-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+}
+
+.header-info-avatar {
+  width: 60px;
+}
+
+.staff-container {
+  height: calc(100vh - 95px);
+}
+
+.container-nav {
+  padding: 30px 16px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nav-normal,
+.nav-active {
+  text-decoration: none;
+  color: #686868;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+
+  &:hover {
+    color: var(--primary-color);
+  }
+}
+
+.nav-active {
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 12px;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.nav-icon {
+  font-size: 2.4rem !important;
+  width: 30px;
+  margin-right: 10px;
+}
+
+.nav-name {
+}
+
+.container-body {
+  border-left: 1px solid #ccc;
+}

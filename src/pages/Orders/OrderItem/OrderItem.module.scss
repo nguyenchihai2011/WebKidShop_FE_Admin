@@ -1,0 +1,21 @@
+.orders-body-image {
+  width: 70px;
+}
+
+.orders-body-actions {
+  display: flex;
+}
+
+.orders-body-action {
+  border: none;
+  padding: 6px;
+  margin: 0 4px;
+}
+
+.orders-action-check {
+  color: green;
+}
+
+.orders-action-xmark {
+  color: red;
+}

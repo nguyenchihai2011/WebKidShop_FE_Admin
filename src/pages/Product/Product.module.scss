@@ -1,0 +1,53 @@
+.product {
+  padding: 20px;
+}
+.product-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.product-lable {
+  font-size: 2rem;
+}
+
+.product-form-group {
+  font-size: 1.6rem;
+  align-items: center;
+}
+
+.product-form-row {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.product-form-col {
+  display: flex;
+  align-items: center;
+}
+
+.product-form-lable {
+  color: #999;
+  font-weight: 300;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+.product-form-input {
+  font-size: 1.6rem;
+}
+
+.product-add-btn {
+  padding: 10px 20px;
+  font-size: 1.6rem;
+}
+
+.product-form-btn {
+  font-size: 1.6rem;
+  padding: 5px 10px;
+}
+
+.product-table {
+  vertical-align: middle;
+}
