@@ -1,0 +1,34 @@
+.searchbar-search {
+  display: flex;
+  align-items: center;
+  width: 60%;
+  border-radius: 12px;
+  background-color: #eee;
+}
+
+.searchbar-search-btn {
+  background-color: transparent;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border: none;
+}
+
+.searchbar-search-icon {
+  font-size: 2rem;
+  padding: 10px 16px;
+  color: #a7a9ae;
+}
+
+.searchbar-search-input {
+  color: #333;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+
+  &:focus {
+    outline: none;
+  }
+}

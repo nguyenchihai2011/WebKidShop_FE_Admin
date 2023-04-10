@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import ProductItem from "./ProductItem/ProductItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Product.module.scss";
@@ -25,9 +26,12 @@ function Product() {
   const handleShow = () => setShow(true);
   return (
     <div className={cx("product")}>
-      <Row xl={10} className={cx("product-header")}>
-        <Col>
+      <Row className={cx("product-header")}>
+        <Col xl={3}>
           <p className={cx("product-lable")}>Product</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
         <Col xl={2}>
           <Button

@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 import ProductTypeItem from "./ProductTypeItem/ProductTypeItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./ProductType.module.scss";
@@ -20,9 +21,12 @@ function ProductType() {
   const handleShow = () => setShow(true);
   return (
     <div className={cx("producttype")}>
-      <Row xl={10} className={cx("producttype-header")}>
-        <Col>
+      <Row className={cx("producttype-header")}>
+        <Col xl={3}>
           <p className={cx("producttype-lable")}>Product-type</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
         <Col xl={2}>
           <Button

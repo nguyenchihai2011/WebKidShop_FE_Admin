@@ -1,7 +1,9 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
+
 import OrderItem from "./OrderItem/OrderItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Orders.module.scss";
@@ -11,9 +13,12 @@ const cx = classNames.bind(styles);
 function Orders() {
   return (
     <div className={cx("orders")}>
-      <Row>
-        <Col>
+      <Row className={cx("orders-row")}>
+        <Col xl={3} className={cx("orders-col")}>
           <p className={cx("orders-lable")}>Orders</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
       </Row>
       <Row>

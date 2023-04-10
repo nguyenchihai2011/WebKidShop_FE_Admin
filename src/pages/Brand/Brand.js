@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 import BrandItem from "./BrandItem/BrandItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Brand.module.scss";
@@ -21,9 +22,12 @@ function Brand() {
   const handleShow = () => setShow(true);
   return (
     <div className={cx("brand")}>
-      <Row xl={10} className={cx("brand-header")}>
-        <Col>
+      <Row className={cx("brand-header")}>
+        <Col xl={3}>
           <p className={cx("brand-lable")}>Brand</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
         <Col xl={2}>
           <Button

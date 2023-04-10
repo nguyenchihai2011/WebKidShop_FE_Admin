@@ -2,10 +2,20 @@
   padding: 20px;
 }
 
-.orders-lable {
-  font-size: 2rem;
+.orders-row {
   margin-bottom: 20px;
 }
+
+.orders-col {
+  display: flex;
+  align-items: center;
+}
+
+.orders-lable {
+  font-size: 2rem;
+  margin-bottom: 0px;
+}
+
 .orders-table {
   vertical-align: middle;
 }

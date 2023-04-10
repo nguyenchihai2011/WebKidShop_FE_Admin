@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 import CategoryItem from "./CategoryItem/CategoryItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Category.module.scss";
@@ -21,8 +22,11 @@ function Category() {
   return (
     <div className={cx("category")}>
       <Row className={cx("category-header")}>
-        <Col xl={10}>
+        <Col xl={3}>
           <p className={cx("category-lable")}>Category</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
         <Col xl={2}>
           <Button

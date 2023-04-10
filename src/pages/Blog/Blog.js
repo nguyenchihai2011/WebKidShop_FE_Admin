@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import BlogItem from "./BlogItem/BlogItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Blog.module.scss";
@@ -27,9 +28,12 @@ function Blog() {
   const handleShow = () => setShow(true);
   return (
     <div className={cx("blog")}>
-      <Row xl={10} className={cx("blog-header")}>
-        <Col>
+      <Row className={cx("blog-header")}>
+        <Col xl={3}>
           <p className={cx("blog-lable")}>Blog</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
         <Col xl={2}>
           <Button

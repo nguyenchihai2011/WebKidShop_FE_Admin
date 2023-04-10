@@ -16,7 +16,6 @@ import {
   faC,
   faCartShopping,
   faGear,
-  faMagnifyingGlass,
   faRectangleAd,
   faStore,
   faT,
@@ -46,21 +45,7 @@ function Staff({ children }) {
             <Col xl={3} className={cx("header-title")}>
               <span className={cx("header-title-name")}>{title}</span>
             </Col>
-            <Col xl={7} className={cx("header-search-wrapper")}>
-              <div className={cx("header-search")}>
-                <button className={cx("header-search-btn")}>
-                  <FontAwesomeIcon
-                    icon={faMagnifyingGlass}
-                    className={cx("header-search-icon")}
-                  />
-                </button>
-                <input
-                  type="text"
-                  placeholder="Search here..."
-                  className={cx("header-search-input")}
-                />
-              </div>
-            </Col>
+            <Col xl={7} className={cx("header-search-wrapper")}></Col>
             <Col xl={2} className={cx("header-info-wrapper")}>
               {/* <FontAwesomeIcon icon={faBell} /> */}
               <div className={cx("header-info")}>

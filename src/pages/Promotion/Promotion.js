@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import PromotionItem from "./PromotionItem/PromotionItem";
+import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Promotion.module.scss";
@@ -27,9 +28,12 @@ function Promotion() {
   const handleShow = () => setShow(true);
   return (
     <div className={cx("promotion")}>
-      <Row xl={10} className={cx("promotion-header")}>
-        <Col>
+      <Row className={cx("promotion-header")}>
+        <Col xl={3}>
           <p className={cx("promotion-lable")}>Promotion</p>
+        </Col>
+        <Col xl={7}>
+          <SearchBar />
         </Col>
         <Col xl={2}>
           <Button
