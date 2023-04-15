@@ -10,6 +10,7 @@ import {
   faPen,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 import classNames from "classnames/bind";
 import styles from "./ProductTypeItem.module.scss";
@@ -19,9 +20,46 @@ const cx = classNames.bind(styles);
 function ProductTypeItem(props) {
   const { producttypeID, producttypeName, producttypeDesc } = props;
   const [show, setShow] = useState(false);
+  const [producttype, setProducttype] = useState({
+    name: producttypeName,
+    description: producttypeDesc,
+  });
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const onChange = (e) => {
+    setProducttype({ ...producttype, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .put(
+        `http://localhost:8080/api/producttype/${producttypeID}`,
+        producttype
+      )
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in UpdateProducttypeInfo!");
+      });
+  };
+
+  const onDelete = (e) => {
+    e.preventDefault();
+
+    axios
+      .delete(`http://localhost:8080/api/producttype/${producttypeID}`)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in DeleteProducttypeInfo!");
+      });
+  };
   return (
     <tr>
       <td>{producttypeID}</td>
@@ -52,6 +90,9 @@ function ProductTypeItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="name"
+                    value={producttype.name}
+                    onChange={onChange}
                     className={cx("producttype-form-input")}
                   />
                 </Col>
@@ -64,6 +105,9 @@ function ProductTypeItem(props) {
                   <Form.Control
                     as="textarea"
                     rows={3}
+                    name="description"
+                    value={producttype.description}
+                    onChange={onChange}
                     className={cx("producttype-form-input")}
                   />
                 </Col>
@@ -81,13 +125,13 @@ function ProductTypeItem(props) {
             <Button
               variant="primary"
               className={cx("producttype-form-btn")}
-              onClick={handleClose}
+              onClick={onSubmit}
             >
               Save
             </Button>
           </Modal.Footer>
         </Modal>
-        <button className={cx("producttype-body-action")}>
+        <button className={cx("producttype-body-action")} onClick={onDelete}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </td>

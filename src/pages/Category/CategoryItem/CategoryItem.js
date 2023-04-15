@@ -10,6 +10,7 @@ import {
   faPen,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 import classNames from "classnames/bind";
 import styles from "./CategoryItem.module.scss";
@@ -19,9 +20,43 @@ const cx = classNames.bind(styles);
 function CategoryItem(props) {
   const { categoryID, categoryName, categoryDesc } = props;
   const [show, setShow] = useState(false);
+  const [category, setCategory] = useState({
+    name: categoryName,
+    description: categoryDesc,
+  });
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const onChange = (e) => {
+    setCategory({ ...category, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .put(`http://localhost:8080/api/category/${categoryID}`, category)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in UpdateCategoryInfo!");
+      });
+  };
+
+  const onDelete = (e) => {
+    e.preventDefault();
+
+    axios
+      .delete(`http://localhost:8080/api/category/${categoryID}`)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in DeleteCategoryInfo!");
+      });
+  };
 
   return (
     <tr>
@@ -53,6 +88,9 @@ function CategoryItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="name"
+                    value={category.name}
+                    onChange={onChange}
                     className={cx("category-form-input")}
                   />
                 </Col>
@@ -65,6 +103,9 @@ function CategoryItem(props) {
                   <Form.Control
                     as="textarea"
                     rows={3}
+                    name="description"
+                    value={category.description}
+                    onChange={onChange}
                     className={cx("category-form-input")}
                   />
                 </Col>
@@ -82,13 +123,13 @@ function CategoryItem(props) {
             <Button
               variant="primary"
               className={cx("category-form-btn")}
-              onClick={handleClose}
+              onClick={onSubmit}
             >
               Save
             </Button>
           </Modal.Footer>
         </Modal>
-        <button className={cx("category-body-action")}>
+        <button onClick={onDelete} className={cx("category-body-action")}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </td>

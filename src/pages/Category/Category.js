@@ -1,10 +1,11 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import axios from "axios";
 
 import CategoryItem from "./CategoryItem/CategoryItem";
 import SearchBar from "../../layouts/components/SearchBar/SearchBar";
@@ -16,9 +17,45 @@ const cx = classNames.bind(styles);
 
 function Category() {
   const [show, setShow] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState({
+    name: "",
+    description: "",
+  });
+
+  const onChange = (e) => {
+    setCategory({ ...category, [e.target.name]: e.target.value });
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:8080/api/category", category)
+      .then((res) => {
+        setCategory({
+          name: "",
+          description: "",
+        });
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in Category!");
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/category")
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((err) => {
+        console.log("Error from CategoryList");
+      });
+  }, [categories]);
+
   return (
     <div className={cx("category")}>
       <Row className={cx("category-header")}>
@@ -53,7 +90,10 @@ function Category() {
                   <Col xs={9}>
                     <Form.Control
                       type="text"
+                      name="name"
+                      value={category.name}
                       className={cx("category-form-input")}
+                      onChange={onChange}
                     />
                   </Col>
                 </p>
@@ -65,7 +105,10 @@ function Category() {
                     <Form.Control
                       as="textarea"
                       rows={3}
+                      name="description"
+                      value={category.description}
                       className={cx("category-form-input")}
+                      onChange={onChange}
                     />
                   </Col>
                 </p>
@@ -82,7 +125,7 @@ function Category() {
               <Button
                 variant="primary"
                 className={cx("category-form-btn")}
-                onClick={handleClose}
+                onClick={handleSubmit}
               >
                 Save
               </Button>
@@ -101,11 +144,16 @@ function Category() {
             </tr>
           </thead>
           <tbody className={cx("category-table-body")}>
-            <CategoryItem
-              categoryID="#0001"
-              categoryName="Góc bé trai"
-              categoryDesc=""
-            />
+            {categories.map((category) => {
+              return (
+                <CategoryItem
+                  key={category._id}
+                  categoryID={category._id}
+                  categoryName={category.name}
+                  categoryDesc={category.description}
+                />
+              );
+            })}
           </tbody>
         </Table>
       </Row>

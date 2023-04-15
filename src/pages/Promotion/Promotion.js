@@ -1,11 +1,12 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,11 +22,49 @@ function Promotion() {
   const [show, setShow] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [promotions, setPromotions] = useState([]);
+  const [promotion, setPromotion] = useState({
+    startDay: new Date(),
+    endDay: new Date(),
+    discount: "",
+  });
 
-  console.log(typeof startDate);
+  const onChange = (e) => {
+    setPromotion({ ...promotion, [e.target.name]: e.target.value });
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .post("http://localhost:8080/api/promotion", promotion)
+      .then((res) => {
+        setPromotion({
+          dayStart: new Date(),
+          dayEnd: new Date(),
+          discount: "",
+        });
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in Promotion!");
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/promotion")
+      .then((res) => {
+        setPromotions(res.data);
+      })
+      .catch((err) => {
+        console.log("Error from PromotionList");
+      });
+  }, [promotions]);
+
   return (
     <div className={cx("promotion")}>
       <Row className={cx("promotion-header")}>
@@ -60,7 +99,10 @@ function Promotion() {
                   <Col xs={9} className={cx("promotion-form-col")}>
                     <DatePicker
                       selected={startDate}
-                      onChange={(date) => setStartDate(date)}
+                      onChange={(date) => {
+                        setStartDate(date);
+                        setPromotion({ ...promotion, startDay: date });
+                      }}
                     />
                   </Col>
                 </p>
@@ -71,7 +113,10 @@ function Promotion() {
                   <Col xs={9} className={cx("promotion-form-col")}>
                     <DatePicker
                       selected={endDate}
-                      onChange={(date) => setEndDate(date)}
+                      onChange={(date) => {
+                        setEndDate(date);
+                        setPromotion({ ...promotion, endDay: date });
+                      }}
                     />
                   </Col>
                 </p>
@@ -82,6 +127,9 @@ function Promotion() {
                   <Col xs={9}>
                     <Form.Control
                       type="text"
+                      name="discount"
+                      value={promotion.discount}
+                      onChange={onChange}
                       className={cx("promotion-form-input")}
                     />
                   </Col>
@@ -99,7 +147,7 @@ function Promotion() {
               <Button
                 variant="primary"
                 className={cx("promotion-form-btn")}
-                onClick={handleClose}
+                onClick={handleSubmit}
               >
                 Save
               </Button>
@@ -119,12 +167,17 @@ function Promotion() {
             </tr>
           </thead>
           <tbody className={cx("promotion-table-body")}>
-            <PromotionItem
-              promotionID="#0001"
-              dayStart={startDate}
-              dayEnd={endDate}
-              discount="50%"
-            />
+            {promotions.map((promotion) => {
+              return (
+                <PromotionItem
+                  key={promotion._id}
+                  promotionID={promotion._id}
+                  dayStart={promotion.startDay}
+                  dayEnd={promotion.endDay}
+                  discount={promotion.discount}
+                />
+              );
+            })}
           </tbody>
         </Table>
       </Row>

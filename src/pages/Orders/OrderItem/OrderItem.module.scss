@@ -2,6 +2,12 @@
   width: 70px;
 }
 
+.orders-name-product,
+.orders-quantity-product {
+  height: 93px;
+  line-height: 93px;
+}
+
 .orders-body-actions {
   display: flex;
 }

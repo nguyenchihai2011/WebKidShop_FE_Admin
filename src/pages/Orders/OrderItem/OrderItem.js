@@ -12,9 +12,10 @@ const cx = classNames.bind(styles);
 
 function OrderItem(props) {
   const {
+    idOrder,
     urlProduct,
     nameProduct,
-    idOrder,
+    quantityProduct,
     dateOrder,
     customerName,
     statusOrder,
@@ -22,15 +23,33 @@ function OrderItem(props) {
   } = props;
   return (
     <tr>
-      <td>
-        <img className={cx("orders-body-image")} src={urlProduct} alt="" />
-        <span>{nameProduct}</span>
-      </td>
       <td>{idOrder}</td>
+      <td>
+        <p>
+          <img className={cx("orders-body-image")} src={urlProduct} alt="" />
+        </p>
+        <p>
+          <img className={cx("orders-body-image")} src={urlProduct} alt="" />
+        </p>
+        <p>
+          <img className={cx("orders-body-image")} src={urlProduct} alt="" />
+        </p>
+      </td>
+      <td>
+        <p className={cx("orders-name-product")}>{nameProduct}</p>
+        <p className={cx("orders-name-product")}>{nameProduct}</p>
+        <p className={cx("orders-name-product")}>{nameProduct}</p>
+      </td>
+      <td>
+        <p className={cx("orders-quantity-product")}>{quantityProduct}</p>
+        <p className={cx("orders-quantity-product")}>{quantityProduct}</p>
+        <p className={cx("orders-quantity-product")}>{quantityProduct}</p>
+      </td>
       <td>{dateOrder}</td>
       <td>{customerName}</td>
       <td>{statusOrder}</td>
       <td>{amount}</td>
+
       <td>
         <div className={cx("orders-body-actions")}>
           <button className={cx("orders-body-action")}>

@@ -1,0 +1,46 @@
+.staffmanage {
+  padding: 20px;
+}
+
+.staffmanage-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.staffmanage-lable {
+  font-size: 2rem;
+}
+
+.staffmanage-form-group {
+  font-size: 1.6rem;
+  align-items: center;
+}
+
+.staffmanage-form-row {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.staffmanage-form-col {
+  display: flex;
+  align-items: center;
+}
+
+.staffmanage-form-input {
+  font-size: 1.6rem;
+}
+
+.staffmanage-add-btn {
+  padding: 10px 20px;
+  font-size: 1.6rem;
+}
+
+.staffmanage-form-btn {
+  font-size: 1.6rem;
+  padding: 5px 10px;
+}
+
+.staffmanage-table {
+  vertical-align: middle;
+}

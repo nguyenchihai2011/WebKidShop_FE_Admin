@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,18 +23,68 @@ const cx = classNames.bind(styles);
 function PromotionItem(props) {
   const { promotionID, dayStart, dayEnd, discount } = props;
   const [show, setShow] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date(dayStart));
+  const [endDate, setEndDate] = useState(new Date(dayEnd));
+  const startObjDay = new Date(dayStart);
+  const endObjDay = new Date(dayEnd);
+
+  const [promotion, setPromotion] = useState({
+    startDay: new Date(dayStart),
+    endDay: new Date(dayEnd),
+    discount: discount,
+  });
+
+  const onChange = (e) => {
+    setPromotion({ ...promotion, [e.target.name]: e.target.value });
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .put(`http://localhost:8080/api/promotion/${promotionID}`, promotion)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in UpdatePromotionInfo!");
+      });
+  };
+
+  const onDelete = (e) => {
+    e.preventDefault();
+
+    axios
+      .delete(`http://localhost:8080/api/promotion/${promotionID}`)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in DeletePromotionInfo!");
+      });
+  };
 
   return (
     <tr>
       <td>{promotionID}</td>
 
-      <td>{dayStart.toDateString()}</td>
-      <td>{dayEnd.toDateString()}</td>
+      <td>
+        {startObjDay.getDate() +
+          "-" +
+          (startObjDay.getMonth() + 1) +
+          "-" +
+          startObjDay.getFullYear()}
+      </td>
+      <td>
+        {endObjDay.getDate() +
+          "-" +
+          (endObjDay.getMonth() + 1) +
+          "-" +
+          endObjDay.getFullYear()}
+      </td>
       <td>{discount}</td>
 
       <td>
@@ -60,7 +111,10 @@ function PromotionItem(props) {
                 <Col xs={9} className={cx("promotion-form-col")}>
                   <DatePicker
                     selected={startDate}
-                    onChange={(date) => setStartDate(date)}
+                    onChange={(date) => {
+                      setStartDate(date);
+                      setPromotion({ ...promotion, startDay: date });
+                    }}
                   />
                 </Col>
               </p>
@@ -70,8 +124,11 @@ function PromotionItem(props) {
                 </Form.Label>
                 <Col xs={9} className={cx("promotion-form-col")}>
                   <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setEndDate(date)}
+                    selected={endDate}
+                    onChange={(date) => {
+                      setEndDate(date);
+                      setPromotion({ ...promotion, endDay: date });
+                    }}
                   />
                 </Col>
               </p>
@@ -82,6 +139,9 @@ function PromotionItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="discount"
+                    value={promotion.discount}
+                    onChange={onChange}
                     className={cx("promotion-form-input")}
                   />
                 </Col>
@@ -99,13 +159,13 @@ function PromotionItem(props) {
             <Button
               variant="primary"
               className={cx("promotion-form-btn")}
-              onClick={handleClose}
+              onClick={onSubmit}
             >
               Save
             </Button>
           </Modal.Footer>
         </Modal>
-        <button className={cx("promotion-body-action")}>
+        <button onClick={onDelete} className={cx("promotion-body-action")}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </td>

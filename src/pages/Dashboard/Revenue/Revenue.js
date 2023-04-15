@@ -56,7 +56,7 @@ export default class Revenue extends PureComponent {
   render() {
     return (
       <BarChart
-        width={850}
+        width={800}
         height={400}
         data={data}
         margin={{

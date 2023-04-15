@@ -1,10 +1,11 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import axios from "axios";
 
 import BrandItem from "./BrandItem/BrandItem";
 import SearchBar from "../../layouts/components/SearchBar/SearchBar";
@@ -16,10 +17,57 @@ const cx = classNames.bind(styles);
 
 function Brand() {
   const [show, setShow] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [brands, setBrands] = useState([]);
+  const [brand, setBrand] = useState({
+    logo: "",
+    fileLogo: null,
+    name: "",
+    description: "",
+  });
+
+  const onChange = (e) => {
+    setBrand({ ...brand, [e.target.name]: e.target.value });
+  };
+
+  const onChooseImg = (e) => {
+    var file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("fileLogo", file);
+    console.log(formData);
+    setBrand({ ...brand, fileLogo: file });
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .post("http://localhost:8080/api/brand", brand)
+      .then((res) => {
+        setBrand({
+          logo: "",
+          name: "",
+          description: "",
+        });
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/brand")
+      .then((res) => {
+        setBrands(res.data);
+      })
+      .catch((err) => {
+        console.log("Error from BrandList");
+      });
+  }, [brands]);
   return (
     <div className={cx("brand")}>
       <Row className={cx("brand-header")}>
@@ -55,6 +103,9 @@ function Brand() {
                     <Form.Control
                       type="text"
                       placeholder="http://www.example.com"
+                      name="logo"
+                      value={brand.logo}
+                      onChange={onChange}
                       className={cx("brand-form-input")}
                     />
                   </Col>
@@ -66,11 +117,7 @@ function Brand() {
                   <Col xs={9}>
                     <Form.Control
                       type="file"
-                      name="myImage"
-                      onChange={(event) => {
-                        console.log(event.target.files[0]);
-                        setSelectedImage(event.target.files[0]);
-                      }}
+                      onChange={onChooseImg}
                       className={cx("brand-form-input")}
                     />
                   </Col>
@@ -82,6 +129,9 @@ function Brand() {
                   <Col xs={9}>
                     <Form.Control
                       type="text"
+                      name="name"
+                      value={brand.name}
+                      onChange={onChange}
                       className={cx("brand-form-input")}
                     />
                   </Col>
@@ -94,6 +144,9 @@ function Brand() {
                     <Form.Control
                       as="textarea"
                       rows={3}
+                      name="description"
+                      value={brand.description}
+                      onChange={onChange}
                       className={cx("brand-form-input")}
                     />
                   </Col>
@@ -111,7 +164,7 @@ function Brand() {
               <Button
                 variant="primary"
                 className={cx("brand-form-btn")}
-                onClick={handleClose}
+                onClick={handleSubmit}
               >
                 Save
               </Button>
@@ -131,12 +184,17 @@ function Brand() {
             </tr>
           </thead>
           <tbody className={cx("brand-table-body")}>
-            <BrandItem
-              brandID="#0001"
-              brandLogo="https://bizweb.dktcdn.net/100/117/632/themes/157694/assets/logo1.png?1564585558451"
-              brandName="Góc bé trai"
-              brandDesc=""
-            />
+            {brands.map((brand) => {
+              return (
+                <BrandItem
+                  key={brand._id}
+                  brandID={brand._id}
+                  brandLogo={brand.logo}
+                  brandName={brand.name}
+                  brandDesc={brand.description}
+                />
+              );
+            })}
           </tbody>
         </Table>
       </Row>

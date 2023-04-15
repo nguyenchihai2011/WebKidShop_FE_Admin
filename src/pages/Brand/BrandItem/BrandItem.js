@@ -10,6 +10,7 @@ import {
   faPen,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 import classNames from "classnames/bind";
 import styles from "./BrandItem.module.scss";
@@ -19,10 +20,44 @@ const cx = classNames.bind(styles);
 function BrandItem(props) {
   const { brandID, brandLogo, brandName, brandDesc } = props;
   const [show, setShow] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [brand, setBrand] = useState({
+    logo: brandLogo,
+    name: brandName,
+    description: brandDesc,
+  });
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const onChange = (e) => {
+    setBrand({ ...brand, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .put(`http://localhost:8080/api/brand/${brandID}`, brand)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in UpdateBrandInfo!");
+      });
+  };
+
+  const onDelete = (e) => {
+    e.preventDefault();
+
+    axios
+      .delete(`http://localhost:8080/api/brand/${brandID}`)
+      .then((res) => {
+        setShow(false);
+      })
+      .catch((err) => {
+        console.log("Error in DeleteBrandInfo!");
+      });
+  };
 
   return (
     <tr>
@@ -57,7 +92,10 @@ function BrandItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="logo"
+                    value={brand.logo}
                     placeholder="http://www.example.com"
+                    onChange={onChange}
                     className={cx("brand-form-input")}
                   />
                 </Col>
@@ -70,10 +108,7 @@ function BrandItem(props) {
                   <Form.Control
                     type="file"
                     name="myImage"
-                    onChange={(event) => {
-                      console.log(event.target.files[0]);
-                      setSelectedImage(event.target.files[0]);
-                    }}
+                    onChange={(event) => {}}
                     className={cx("brand-form-input")}
                   />
                 </Col>
@@ -85,6 +120,9 @@ function BrandItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="name"
+                    value={brand.name}
+                    onChange={onChange}
                     className={cx("brand-form-input")}
                   />
                 </Col>
@@ -97,6 +135,9 @@ function BrandItem(props) {
                   <Form.Control
                     as="textarea"
                     rows={3}
+                    name="description"
+                    value={brand.description}
+                    onChange={onChange}
                     className={cx("brand-form-input")}
                   />
                 </Col>
@@ -114,13 +155,13 @@ function BrandItem(props) {
             <Button
               variant="primary"
               className={cx("brand-form-btn")}
-              onClick={handleClose}
+              onClick={onSubmit}
             >
               Save
             </Button>
           </Modal.Footer>
         </Modal>
-        <button className={cx("brand-body-action")}>
+        <button onClick={onDelete} className={cx("brand-body-action")}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </td>

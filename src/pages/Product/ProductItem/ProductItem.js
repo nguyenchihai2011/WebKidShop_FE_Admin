@@ -22,7 +22,6 @@ const cx = classNames.bind(styles);
 function ProductItem(props) {
   const {
     productID,
-    image,
     productName,
     productSize,
     productColor,
@@ -32,7 +31,7 @@ function ProductItem(props) {
   } = props;
   const [show, setShow] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
+  const [arrDay, setArrDay] = useState(new Date(arrivalDate));
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -47,9 +46,12 @@ function ProductItem(props) {
       <td>{price}</td>
       <td>{stock}</td>
       <td>
-        <img src={image} alt="" />
+        {arrDay.getDate() +
+          "-" +
+          (arrDay.getMonth() + 1) +
+          "-" +
+          arrDay.getFullYear()}
       </td>
-      <td>{arrivalDate}</td>
 
       <td>
         <button className={cx("product-body-action")}>
@@ -169,8 +171,8 @@ function ProductItem(props) {
                 </Form.Label>
                 <Col xs={9} className={cx("product-form-col")}>
                   <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
+                    selected={arrDay}
+                    onChange={(date) => setArrDay(date)}
                   />
                 </Col>
               </p>
