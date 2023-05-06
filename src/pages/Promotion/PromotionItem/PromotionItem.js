@@ -1,6 +1,6 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -57,14 +57,16 @@ function PromotionItem(props) {
   const onDelete = (e) => {
     e.preventDefault();
 
-    axios
-      .delete(`http://localhost:8080/api/promotion/${promotionID}`)
-      .then((res) => {
-        setShow(false);
-      })
-      .catch((err) => {
-        console.log("Error in DeletePromotionInfo!");
-      });
+    if (window.confirm("Do you want to delete?")) {
+      axios
+        .delete(`http://localhost:8080/api/promotion/${promotionID}`)
+        .then((res) => {
+          setShow(false);
+        })
+        .catch((err) => {
+          console.log("Error in DeletePromotionInfo!");
+        });
+    }
   };
 
   return (

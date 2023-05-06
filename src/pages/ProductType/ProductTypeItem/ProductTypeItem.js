@@ -50,15 +50,16 @@ function ProductTypeItem(props) {
 
   const onDelete = (e) => {
     e.preventDefault();
-
-    axios
-      .delete(`http://localhost:8080/api/producttype/${producttypeID}`)
-      .then((res) => {
-        setShow(false);
-      })
-      .catch((err) => {
-        console.log("Error in DeleteProducttypeInfo!");
-      });
+    if (window.confirm("Do you want to delete?")) {
+      axios
+        .delete(`http://localhost:8080/api/producttype/${producttypeID}`)
+        .then((res) => {
+          setShow(false);
+        })
+        .catch((err) => {
+          console.log("Error in DeleteProducttypeInfo!");
+        });
+    }
   };
   return (
     <tr>

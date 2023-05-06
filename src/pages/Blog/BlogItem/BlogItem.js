@@ -22,7 +22,6 @@ const cx = classNames.bind(styles);
 function BlogItem(props) {
   const { blogID, title, content, date, image } = props;
   const [show, setShow] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
 
   const handleClose = () => setShow(false);
@@ -109,7 +108,6 @@ function BlogItem(props) {
                     name="myImage"
                     onChange={(event) => {
                       console.log(event.target.files[0]);
-                      setSelectedImage(event.target.files[0]);
                     }}
                     className={cx("blog-form-input")}
                   />

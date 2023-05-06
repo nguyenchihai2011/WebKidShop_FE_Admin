@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,16 +22,19 @@ const cx = classNames.bind(styles);
 
 function Product() {
   const [show, setShow] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+
   const [arrDay, setArrDay] = useState(new Date());
   const [brands, setBrands] = useState([]);
-  const [brandSelected, setBrandSelected] = useState();
+
   const [categories, setCategories] = useState([]);
-  const [categorySelected, setCategorySelected] = useState();
+
   const [productTypes, setProductTypes] = useState([]);
-  const [producttypeSelected, setProducttypeSelected] = useState();
+
   const [promotion, setPromotion] = useState([]);
-  const [promotionSelected, setPromotionSelected] = useState();
+
+  const [currentProducts, setCurrentProducts] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
     name: "",
@@ -44,7 +48,7 @@ function Product() {
     brand: "",
     category: "",
     productType: "",
-    promotion: "",
+    // promotion: "",
   });
 
   const handleClose = () => setShow(false);
@@ -58,7 +62,7 @@ function Product() {
     e.preventDefault();
     console.log(product);
     axios
-      .post("http://localhost:8080/api/product", product)
+      .post("http://localhost:8080/api/product/create", product)
       .then((res) => {
         setProduct({
           name: "",
@@ -75,9 +79,12 @@ function Product() {
           promotion: "",
         });
         setShow(false);
+        window.location.reload(true);
+        alert("Created successfully");
       })
+
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data);
       });
   };
 
@@ -112,7 +119,10 @@ function Product() {
     axios
       .get("http://localhost:8080/api/promotion")
       .then((res) => {
-        setPromotion(res.data);
+        var data = res.data.filter((item) => {
+          return new Date(item.startDay) >= new Date();
+        });
+        setPromotion(data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -122,9 +132,18 @@ function Product() {
       .get("http://localhost:8080/api/product")
       .then((res) => {
         setProducts(res.data);
+        setCurrentProducts(res.data.slice(0, 10));
+        setPageCount(Math.ceil(res.data.length / 10));
       })
       .catch((err) => console.log(err));
-  }, [products]);
+  }, []);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * 10) % products.length;
+    const endOffset = newOffset + 10;
+    setCurrentProducts(products.slice(newOffset, endOffset));
+    setPageCount(Math.ceil(products.length / 10));
+  };
 
   return (
     <div className={cx("product")}>
@@ -265,10 +284,6 @@ function Product() {
                     <Form.Control
                       type="file"
                       name="myImage"
-                      onChange={(event) => {
-                        console.log(event.target.files[0]);
-                        setSelectedImage(event.target.files[0]);
-                      }}
                       className={cx("product-form-input")}
                     />
                   </Col>
@@ -301,7 +316,6 @@ function Product() {
                       getOptionLabel={(option) => option.name}
                       getOptionValue={(option) => option._id}
                       onChange={(brand) => {
-                        setBrandSelected(brand._id);
                         setProduct({ ...product, brand: brand._id });
                       }}
                       className={cx("product-form-input")}
@@ -319,7 +333,6 @@ function Product() {
                       getOptionLabel={(option) => option.name}
                       getOptionValue={(option) => option._id}
                       onChange={(category) => {
-                        setCategorySelected(category._id);
                         setProduct({ ...product, category: category._id });
                       }}
                       className={cx("product-form-input")}
@@ -337,7 +350,6 @@ function Product() {
                       getOptionLabel={(option) => option.name}
                       getOptionValue={(option) => option._id}
                       onChange={(productType) => {
-                        setProducttypeSelected(productType._id);
                         setProduct({
                           ...product,
                           productType: productType._id,
@@ -358,7 +370,6 @@ function Product() {
                       getOptionLabel={(option) => option.discount}
                       getOptionValue={(option) => option._id}
                       onChange={(promotion) => {
-                        setPromotionSelected(promotion._id);
                         setProduct({ ...product, promotion: promotion._id });
                       }}
                       className={cx("product-form-input")}
@@ -401,7 +412,7 @@ function Product() {
             </tr>
           </thead>
           <tbody className={cx("product-table-body")}>
-            {products.map((product) => {
+            {currentProducts.map((product) => {
               return (
                 <ProductItem
                   key={product._id}
@@ -411,13 +422,33 @@ function Product() {
                   productColor={product.color}
                   price={product.price}
                   stock={product.stock}
+                  description={product.description}
+                  productPic={product.productPic}
                   arrivalDate={product.arrivalDate}
+                  brand={product.brand}
+                  category={product.category}
+                  productType={product.productType}
+                  promotion={product.promotion}
                 />
               );
             })}
           </tbody>
         </Table>
       </Row>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        containerClassName={cx("pagination")}
+        pageLinkClassName={cx("page-num")}
+        previousLinkClassName={cx("page-num")}
+        nextLinkClassName={cx("page-num")}
+        activeLinkClassName={cx("active")}
+      />
     </div>
   );
 }

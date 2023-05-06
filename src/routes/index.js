@@ -11,6 +11,7 @@ import Product from "../pages/Product/Product";
 import Promotion from "../pages/Promotion/Promotion";
 import Blog from "../pages/Blog/Blog";
 import StaffManage from "../pages/StaffManage/StaffManage";
+import ChangePassword from "../pages/ChangePassword/ChangePassword";
 
 const publicRoutes = [
   { path: "/", component: Signin, layout: null },
@@ -22,6 +23,11 @@ const publicRoutes = [
   { path: "/staff/product", component: Product, layout: Staff },
   { path: "/staff/promotion", component: Promotion, layout: Staff },
   { path: "/staff/blog", component: Blog, layout: Staff },
+  {
+    path: "/manage/account/password",
+    component: ChangePassword,
+    layout: Staff,
+  },
   { path: "/admin/dashboard", component: Dashboard, layout: Admin },
   { path: "/admin/orders", component: Orders, layout: Admin },
   { path: "/admin/category", component: Category, layout: Admin },

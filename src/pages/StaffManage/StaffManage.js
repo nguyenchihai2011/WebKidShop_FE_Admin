@@ -11,7 +11,7 @@ import axios from "axios";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-// import staffmanageItem from "./staffmanageItem/staffmanageItem";
+import StaffManageItem from "./StaffManageItem/StaffManageItem";
 import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
@@ -20,8 +20,12 @@ import styles from "./StaffManage.module.scss";
 const cx = classNames.bind(styles);
 
 function StaffManage() {
+  const gender = [
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" },
+  ];
   const [show, setShow] = useState(false);
-  const [dateOfBirst, setDateOfBirst] = useState(new Date());
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [staffmanages, setstaffmanages] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(0);
@@ -30,10 +34,15 @@ function StaffManage() {
   const [wards, setWards] = useState([]);
   const [selectedWard, setSelectedWard] = useState(0);
   const [staffmanage, setstaffmanage] = useState({
-    startDay: new Date(),
-    endDay: new Date(),
-    discount: "",
+    firstName: "",
+    lastName: "",
+    gender: "",
+    dateOfBirth: new Date(),
+    address: "",
+    email: "",
+    password: "",
   });
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const onChange = (e) => {
     setstaffmanage({ ...staffmanage, [e.target.name]: e.target.value });
@@ -44,15 +53,29 @@ function StaffManage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (staffmanage.password !== passwordConfirm) {
+      alert("Mật khẩu xác nhận chưa chính xác!");
+      return;
+    }
+
+    setstaffmanage({
+      ...staffmanage,
+      address: `${selectedWard} ${selectedDistrict} ${selectedProvince}`,
+    });
 
     axios
-      .post("http://localhost:8080/api/staffmanage", staffmanage)
+      .post("http://localhost:8080/api/admin/staff/create", staffmanage)
       .then((res) => {
         setstaffmanage({
-          dayStart: new Date(),
-          dayEnd: new Date(),
-          discount: "",
+          firstName: "",
+          lastName: "",
+          gender: "",
+          dateOfBirth: new Date(),
+          address: "",
+          email: "",
+          password: "",
         });
+        setPasswordConfirm("");
         setShow(false);
       })
       .catch((err) => {
@@ -62,7 +85,7 @@ function StaffManage() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/staffmanage")
+      .get("http://localhost:8080/api/admin/staff")
       .then((res) => {
         setstaffmanages(res.data);
       })
@@ -123,11 +146,7 @@ function StaffManage() {
                 <Modal.Title>Staffmanage</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <Form.Group
-                  as={Row}
-                  className={cx("staffmanage-form-group")}
-                  controlId="exampleForm.ControlInput1"
-                >
+                <Form.Group as={Row} className={cx("staffmanage-form-group")}>
                   <p className={cx("staffmanage-form-row")}>
                     <Form.Label column xs={3}>
                       FirstName
@@ -135,7 +154,9 @@ function StaffManage() {
                     <Col xs={9}>
                       <Form.Control
                         type="text"
-                        name="firstname"
+                        name="firstName"
+                        value={staffmanage.firstName}
+                        onChange={onChange}
                         className={cx("staffmanage-form-input")}
                       />
                     </Col>
@@ -147,7 +168,9 @@ function StaffManage() {
                     <Col xs={9}>
                       <Form.Control
                         type="text"
-                        name="lastname"
+                        name="lastName"
+                        value={staffmanage.lastName}
+                        onChange={onChange}
                         className={cx("staffmanage-form-input")}
                       />
                     </Col>
@@ -159,23 +182,27 @@ function StaffManage() {
                     <Col xs={9} className={cx("staffmanage-form-col")}>
                       <Select
                         placeholder="Gender"
-                        options={[
-                          { value: "male", label: "Male" },
-                          { value: "female", label: "Female" },
-                        ]}
+                        options={gender}
+                        onChange={(gender) => {
+                          setstaffmanage({
+                            ...staffmanage,
+                            gender: gender.value,
+                          });
+                        }}
                         className={cx("staffmanage-form-input")}
                       />
                     </Col>
                   </p>
                   <p className={cx("staffmanage-form-row")}>
                     <Form.Label column xs={3}>
-                      DateOfBirst
+                      DateOfBirth
                     </Form.Label>
                     <Col xs={9} className={cx("staffmanage-form-col")}>
                       <DatePicker
-                        selected={dateOfBirst}
+                        selected={dateOfBirth}
                         onChange={(date) => {
-                          setDateOfBirst(date);
+                          setDateOfBirth(date);
+                          setstaffmanage({ ...staffmanage, dateOfBirth: date });
                         }}
                         className={cx("staffmanage-form-input")}
                       />
@@ -234,6 +261,8 @@ function StaffManage() {
                       <Form.Control
                         type="email"
                         name="email"
+                        value={staffmanage.email}
+                        onChange={onChange}
                         className={cx("staffmanage-form-input")}
                       />
                     </Col>
@@ -246,6 +275,8 @@ function StaffManage() {
                       <Form.Control
                         type="password"
                         name="password"
+                        value={staffmanage.password}
+                        onChange={onChange}
                         className={cx("staffmanage-form-input")}
                       />
                     </Col>
@@ -257,7 +288,8 @@ function StaffManage() {
                     <Col xs={9}>
                       <Form.Control
                         type="password"
-                        name="passwordconfirm"
+                        value={passwordConfirm}
+                        onChange={(e) => setPasswordConfirm(e.target.value)}
                         className={cx("staffmanage-form-input")}
                       />
                     </Col>
@@ -291,23 +323,27 @@ function StaffManage() {
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Gender</th>
-                <th>DateOfBirst</th>
+                <th>DateOfBirth</th>
                 <th>Address</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody className={cx("staffmanage-table-body")}>
-              {/* {staffmanages.map((staffmanage) => {
+              {staffmanages.map((staffmanage) => {
                 return (
-                  <staffmanageItem
+                  <StaffManageItem
                     key={staffmanage._id}
-                    staffmanageID={staffmanage._id}
-                    dayStart={staffmanage.startDay}
-                    dayEnd={staffmanage.endDay}
-                    discount={staffmanage.discount}
+                    id={staffmanage._id}
+                    firstName={staffmanage.firstName}
+                    lastName={staffmanage.lastName}
+                    gender={staffmanage.gender}
+                    dateOfBirth={staffmanage.dateOfBirth}
+                    address={staffmanage.address}
+                    email={staffmanage.email}
+                    password={staffmanage.password}
                   />
                 );
-              })} */}
+              })}
             </tbody>
           </Table>
         </Row>

@@ -32,7 +32,7 @@ function Category() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8080/api/category", category)
+      .post("http://localhost:8080/api/category/create", category)
       .then((res) => {
         setCategory({
           name: "",

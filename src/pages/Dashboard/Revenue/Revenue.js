@@ -36,19 +36,19 @@ const data = [
   },
   {
     name: "Sep",
-    revenue: 3490,
+    revenue: 3000,
   },
   {
     name: "Otc",
-    revenue: 3490,
+    revenue: 4000,
   },
   {
     name: "Nov",
-    revenue: 3490,
+    revenue: 4590,
   },
   {
     name: "Dec",
-    revenue: 3490,
+    revenue: 3570,
   },
 ];
 

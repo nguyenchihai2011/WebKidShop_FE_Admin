@@ -1,16 +1,43 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
+import axios from "axios";
+import ReactPaginate from "react-paginate";
 
 import OrderItem from "./OrderItem/OrderItem";
 import SearchBar from "../../layouts/components/SearchBar/SearchBar";
 
 import classNames from "classnames/bind";
 import styles from "./Orders.module.scss";
+import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
 
 function Orders() {
+  const [orders, setOrders] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [curOrders, setCurOrders] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/checkout")
+      .then((res) => {
+        setOrders(res.data.orders);
+        setCurOrders(res.data.orders.slice(0, 10));
+        setPageCount(Math.ceil(res.data.orders.length / 10));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * 10) % orders.length;
+    const endOffset = newOffset + 10;
+    setCurOrders(orders.slice(newOffset, endOffset));
+    setPageCount(Math.ceil(orders.length / 10));
+  };
+
   return (
     <div className={cx("orders")}>
       <Row className={cx("orders-row")}>
@@ -26,30 +53,45 @@ function Orders() {
           <thead className={cx("orders-header")}>
             <tr>
               <th>OrderID</th>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Quantity</th>
               <th>Date</th>
-              <th>Customer name</th>
+              <th>Customer ID</th>
               <th>Status</th>
               <th>Amount</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody className={cx("orders-body")}>
-            <OrderItem
-              urlProduct="https://bizweb.dktcdn.net/thumb/large/100/117/632/products/giay5-6ad05ccc-be71-4eca-83f8-3e73a5570372-42da6097-d9b3-437a-afe5-66c1be4352b4-8a365fca-ef0a-415a-838e-f172e148cb7c.jpg?v=1473603367000"
-              nameProduct="Giầy thể thao buộc dây - F56"
-              quantityProduct="1"
-              idOrder="#11232"
-              dateOrder="Jun 29,2023"
-              customerName="Anastasisa Hasuna"
-              statusOrder="Delivered"
-              amount="450.000đ"
-            />
+            {curOrders.map((order) => {
+              return (
+                <OrderItem
+                  key={order._id}
+                  idOrder={order._id}
+                  dateOrder={order.orderDate}
+                  customerID={order.user?._id}
+                  statusOrder={order.status}
+                  amount={order?.order.reduce((total, item) => {
+                    return total + item.price * item.quantity;
+                  }, 0)}
+                />
+              );
+            })}
           </tbody>
         </Table>
       </Row>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        containerClassName={cx("pagination")}
+        pageLinkClassName={cx("page-num")}
+        previousLinkClassName={cx("page-num")}
+        nextLinkClassName={cx("page-num")}
+        activeLinkClassName={cx("active")}
+      />
     </div>
   );
 }

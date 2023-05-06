@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +14,8 @@ import {
   faPen,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
+import Select from "react-select";
+import { useEffect } from "react";
 
 import classNames from "classnames/bind";
 import styles from "./ProductItem.module.scss";
@@ -27,14 +30,127 @@ function ProductItem(props) {
     productColor,
     price,
     stock,
+    description,
+    productPic,
     arrivalDate,
+    brand,
+    category,
+    productType,
+    promotion,
   } = props;
   const [show, setShow] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [arrDay, setArrDay] = useState(new Date(arrivalDate));
+  const [product, setProduct] = useState({
+    name: productName,
+    size: productSize,
+    color: productColor,
+    price,
+    stock,
+    description,
+    productPic,
+    arrivalDate: new Date(arrivalDate),
+    brand,
+    category,
+    productType,
+    promotion,
+  });
+  const [brands, setBrands] = useState([]);
+
+  const [categories, setCategories] = useState([]);
+
+  const [productTypes, setProductTypes] = useState([]);
+
+  const [promotions, setPromotions] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const onChange = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+
+    axios
+      .put(`http://localhost:8080/api/product/${productID}`, product)
+      .then((res) => {
+        setProduct({
+          name: productName,
+          size: productSize,
+          color: productColor,
+          price,
+          stock,
+          description,
+          productPic,
+          arrivalDate: new Date(arrivalDate),
+          brand,
+          category,
+          productType,
+          promotion,
+        });
+        setShow(false);
+        window.location.reload(true);
+        alert("Updated successfully");
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onDelete = (e) => {
+    e.preventDefault();
+
+    if (window.confirm("Do you want to delete?")) {
+      axios
+        .delete(`http://localhost:8080/api/product/${productID}`)
+        .then((res) => {
+          setShow(false);
+          window.location.reload(true);
+          alert("Deleted successfully");
+        })
+        .catch((err) => {
+          console.log("Error in DeletePromotionInfo!");
+        });
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/brand")
+      .then((res) => {
+        setBrands(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/category")
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/producttype")
+      .then((res) => {
+        setProductTypes(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/promotion")
+      .then((res) => {
+        var data = res.data.filter((item) => {
+          return new Date(item.startDay) >= new Date();
+        });
+        setPromotions(data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <tr>
@@ -77,6 +193,9 @@ function ProductItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="name"
+                    value={product.name}
+                    onChange={onChange}
                     className={cx("product-form-input")}
                   />
                 </Col>
@@ -88,6 +207,9 @@ function ProductItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="size"
+                    value={product.size}
+                    onChange={onChange}
                     className={cx("product-form-input")}
                   />
                 </Col>
@@ -99,6 +221,9 @@ function ProductItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="color"
+                    value={product.color}
+                    onChange={onChange}
                     className={cx("product-form-input")}
                   />
                 </Col>
@@ -110,6 +235,9 @@ function ProductItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="price"
+                    value={product.price}
+                    onChange={onChange}
                     className={cx("product-form-input")}
                   />
                 </Col>
@@ -120,7 +248,10 @@ function ProductItem(props) {
                 </Form.Label>
                 <Col xs={9}>
                   <Form.Control
-                    type="area"
+                    type="text"
+                    name="stock"
+                    value={product.stock}
+                    onChange={onChange}
                     className={cx("product-form-input")}
                   />
                 </Col>
@@ -133,6 +264,9 @@ function ProductItem(props) {
                   <Form.Control
                     as="textarea"
                     rows={3}
+                    name="description"
+                    value={product.description}
+                    onChange={onChange}
                     className={cx("product-form-input")}
                   />
                 </Col>
@@ -144,6 +278,9 @@ function ProductItem(props) {
                 <Col xs={9}>
                   <Form.Control
                     type="text"
+                    name="productPic"
+                    value={product.productPic}
+                    onChange={onChange}
                     placeholder="http://www.example.com"
                     className={cx("product-form-input")}
                   />
@@ -159,7 +296,6 @@ function ProductItem(props) {
                     name="myImage"
                     onChange={(event) => {
                       console.log(event.target.files[0]);
-                      setSelectedImage(event.target.files[0]);
                     }}
                     className={cx("product-form-input")}
                   />
@@ -172,7 +308,13 @@ function ProductItem(props) {
                 <Col xs={9} className={cx("product-form-col")}>
                   <DatePicker
                     selected={arrDay}
-                    onChange={(date) => setArrDay(date)}
+                    onChange={(date) => {
+                      setArrDay(date);
+                      setProduct({
+                        ...product,
+                        arrivalDate: date,
+                      });
+                    }}
                   />
                 </Col>
               </p>
@@ -181,15 +323,16 @@ function ProductItem(props) {
                   Brand
                 </Form.Label>
                 <Col xs={9}>
-                  <Form.Select
-                    aria-label="Default select example"
+                  <Select
+                    placeholder="Brand"
+                    options={brands}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option._id}
+                    onChange={(brand) => {
+                      setProduct({ ...product, brand: brand._id });
+                    }}
                     className={cx("product-form-input")}
-                  >
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  />
                 </Col>
               </p>
               <p className={cx("product-form-row")}>
@@ -197,15 +340,16 @@ function ProductItem(props) {
                   Category
                 </Form.Label>
                 <Col xs={9}>
-                  <Form.Select
-                    aria-label="Default select example"
+                  <Select
+                    placeholder="Category"
+                    options={categories}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option._id}
+                    onChange={(category) => {
+                      setProduct({ ...product, category: category._id });
+                    }}
                     className={cx("product-form-input")}
-                  >
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  />
                 </Col>
               </p>
               <p className={cx("product-form-row")}>
@@ -213,15 +357,19 @@ function ProductItem(props) {
                   ProductType
                 </Form.Label>
                 <Col xs={9}>
-                  <Form.Select
-                    aria-label="Default select example"
+                  <Select
+                    placeholder="Producttype"
+                    options={productTypes}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option._id}
+                    onChange={(productType) => {
+                      setProduct({
+                        ...product,
+                        productType: productType._id,
+                      });
+                    }}
                     className={cx("product-form-input")}
-                  >
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  />
                 </Col>
               </p>
               <p className={cx("product-form-row")}>
@@ -229,15 +377,16 @@ function ProductItem(props) {
                   Promotion
                 </Form.Label>
                 <Col xs={9}>
-                  <Form.Select
-                    aria-label="Default select example"
+                  <Select
+                    placeholder="Promotion"
+                    options={promotions}
+                    getOptionLabel={(option) => option.discount}
+                    getOptionValue={(option) => option._id}
+                    onChange={(promotion) => {
+                      setProduct({ ...product, promotion: promotion._id });
+                    }}
                     className={cx("product-form-input")}
-                  >
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
+                  />
                 </Col>
               </p>
             </Form.Group>
@@ -253,13 +402,13 @@ function ProductItem(props) {
             <Button
               variant="primary"
               className={cx("product-form-btn")}
-              onClick={handleClose}
+              onClick={handleUpdate}
             >
               Save
             </Button>
           </Modal.Footer>
         </Modal>
-        <button className={cx("product-body-action")}>
+        <button onClick={onDelete} className={cx("product-body-action")}>
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
       </td>

@@ -33,7 +33,7 @@ function ProductType() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8080/api/producttype", producttype)
+      .post("http://localhost:8080/api/producttype/create", producttype)
       .then((res) => {
         setProducttype({
           name: "",

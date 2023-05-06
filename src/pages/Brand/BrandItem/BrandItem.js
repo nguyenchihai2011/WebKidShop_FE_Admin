@@ -49,14 +49,16 @@ function BrandItem(props) {
   const onDelete = (e) => {
     e.preventDefault();
 
-    axios
-      .delete(`http://localhost:8080/api/brand/${brandID}`)
-      .then((res) => {
-        setShow(false);
-      })
-      .catch((err) => {
-        console.log("Error in DeleteBrandInfo!");
-      });
+    if (window.confirm("Do you want to delete?")) {
+      axios
+        .delete(`http://localhost:8080/api/brand/delete/${brandID}`)
+        .then((res) => {
+          setShow(false);
+        })
+        .catch((err) => {
+          console.log("Error in DeleteBrandInfo!");
+        });
+    }
   };
 
   return (

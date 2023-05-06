@@ -1,9 +1,7 @@
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 
-import React from "react";
-
-import { useLocation, NavLink, Link } from "react-router-dom";
+import { useLocation, NavLink, Link, useNavigate } from "react-router-dom";
 
 import classNames from "classnames/bind";
 import styles from "./Admin.module.scss";
@@ -20,6 +18,7 @@ import {
   faT,
   faTableColumns,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../../context/auth";
 
 const cx = classNames.bind(styles);
 
@@ -27,6 +26,17 @@ function Admin({ children }) {
   let location = useLocation();
   let title = location.pathname.slice(location.pathname.lastIndexOf("/"));
   title = title.slice(1);
+
+  const navigate = useNavigate();
+  // eslint-disable-next-line
+  const [auth, setAuth] = useAuth();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    setAuth({});
+    localStorage.removeItem("auth");
+    navigate("/");
+  };
 
   return (
     <div className="admin">
@@ -48,7 +58,7 @@ function Admin({ children }) {
             <Col xl={2} className={cx("header-info-wrapper")}>
               {/* <FontAwesomeIcon icon={faBell} /> */}
               <div className={cx("header-info")}>
-                <span className={cx("header-info-name")}>Alex Mora</span>
+                <span className={cx("header-info-name")}>Admin</span>
                 <img
                   className={cx("header-info-avatar")}
                   src="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
@@ -199,7 +209,9 @@ function Admin({ children }) {
                 icon={faArrowRightFromBracket}
                 className={cx("nav-icon")}
               />
-              <span className={cx("nav-name")}>Logout</span>
+              <span onClick={handleLogout} className={cx("nav-name")}>
+                Logout
+              </span>
             </Link>
           </div>
         </Col>

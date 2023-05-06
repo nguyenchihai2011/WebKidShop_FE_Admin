@@ -48,14 +48,16 @@ function CategoryItem(props) {
   const onDelete = (e) => {
     e.preventDefault();
 
-    axios
-      .delete(`http://localhost:8080/api/category/${categoryID}`)
-      .then((res) => {
-        setShow(false);
-      })
-      .catch((err) => {
-        console.log("Error in DeleteCategoryInfo!");
-      });
+    if (window.confirm("Do you want to delete?")) {
+      axios
+        .delete(`http://localhost:8080/api/category/${categoryID}`)
+        .then((res) => {
+          setShow(false);
+        })
+        .catch((err) => {
+          console.log("Error in DeleteCategoryInfo!");
+        });
+    }
   };
 
   return (

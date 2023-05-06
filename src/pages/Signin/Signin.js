@@ -8,18 +8,51 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth";
 import classNames from "classnames/bind";
 import styles from "./Signin.module.scss";
 
 const cx = classNames.bind(styles);
 
 function Signin() {
+  const navigate = useNavigate();
+  const [auth, setAuth] = useAuth();
   const [radioValue, setRadioValue] = useState("1");
   const radios = [
     { name: "Log in for staff", value: "1" },
     { name: "Log in for admin", value: "2" },
   ];
+
+  const [account, setAccount] = useState({
+    email: "",
+    password: "",
+  });
+
+  const onChange = (e) => {
+    setAccount({ ...account, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    let urlString = "";
+    urlString =
+      radioValue === "1"
+        ? "http://localhost:8080/api/staff/login"
+        : "http://localhost:8080/api/admin/login";
+    axios
+      .post(urlString, account)
+      .then((res) => {
+        setAuth({ ...auth, staff: res.data.staff });
+        localStorage.setItem("auth", JSON.stringify(res.data));
+        navigate("/");
+        if (radioValue === "1") navigate("/staff/dashboard");
+        else navigate("/admin/dashboard");
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div className={cx("signin")}>
       <Container>
@@ -51,10 +84,7 @@ function Signin() {
               />
               <h2 className={cx("signin-form-title")}>Welcome to WebKidShop</h2>
               <Form>
-                <Form.Group
-                  className={cx("signin-form-group")}
-                  controlId="exampleForm.ControlInput1"
-                >
+                <Form.Group className={cx("signin-form-group")}>
                   <Form.Label>
                     <FontAwesomeIcon
                       icon={faUser}
@@ -63,14 +93,14 @@ function Signin() {
                   </Form.Label>
                   <Form.Control
                     type="email"
+                    name="email"
+                    value={account.email}
                     placeholder="name@example.com"
+                    onChange={onChange}
                     className={cx("signin-form-input")}
                   />
                 </Form.Group>
-                <Form.Group
-                  className={cx("signin-form-group")}
-                  controlId="exampleForm.ControlInput1"
-                >
+                <Form.Group className={cx("signin-form-group")}>
                   <Form.Label>
                     <FontAwesomeIcon
                       icon={faLock}
@@ -80,10 +110,15 @@ function Signin() {
                   <Form.Control
                     type="password"
                     placeholder="******"
+                    name="password"
+                    value={account.password}
+                    onChange={onChange}
                     className={cx("signin-form-input")}
                   />
                 </Form.Group>
-                <button className={cx("signin-form-btn")}>Sign In</button>
+                <button onClick={handleLogin} className={cx("signin-form-btn")}>
+                  Sign In
+                </button>
               </Form>
             </div>
           </Col>

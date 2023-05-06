@@ -7,46 +7,59 @@ import {
 
 import classNames from "classnames/bind";
 import styles from "./OrderItem.module.scss";
+import axios from "axios";
+import { useState } from "react";
 
 const cx = classNames.bind(styles);
 
 function OrderItem(props) {
-  const {
-    idOrder,
-    urlProduct,
-    nameProduct,
-    quantityProduct,
-    dateOrder,
-    customerName,
-    statusOrder,
-    amount,
-  } = props;
+  const { idOrder, dateOrder, customerID, statusOrder, amount } = props;
+
+  const [date, setDate] = useState(new Date(dateOrder));
+
+  const handleConfirm = (e) => {
+    e.preventDefault();
+
+    axios
+      .patch(`http://localhost:8080/api/checkout/${idOrder}/status`, {
+        status: "Confirmed",
+      })
+      .then((res) => {
+        alert("Đơn hàng được duyệt thành công!");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleReject = (e) => {
+    e.preventDefault();
+
+    axios
+      .patch(`http://localhost:8080/api/checkout/${idOrder}/status`, {
+        status: "Reject",
+      })
+      .then((res) => {
+        alert("Đơn hàng bị huỷ thành công!");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <tr>
       <td>{idOrder}</td>
       <td>
-        <p>
-          <img className={cx("orders-body-image")} src={urlProduct} alt="" />
-        </p>
-        <p>
-          <img className={cx("orders-body-image")} src={urlProduct} alt="" />
-        </p>
-        <p>
-          <img className={cx("orders-body-image")} src={urlProduct} alt="" />
-        </p>
+        {date.getDate() +
+          "-" +
+          (date.getMonth() + 1) +
+          "-" +
+          date.getFullYear()}
       </td>
-      <td>
-        <p className={cx("orders-name-product")}>{nameProduct}</p>
-        <p className={cx("orders-name-product")}>{nameProduct}</p>
-        <p className={cx("orders-name-product")}>{nameProduct}</p>
-      </td>
-      <td>
-        <p className={cx("orders-quantity-product")}>{quantityProduct}</p>
-        <p className={cx("orders-quantity-product")}>{quantityProduct}</p>
-        <p className={cx("orders-quantity-product")}>{quantityProduct}</p>
-      </td>
-      <td>{dateOrder}</td>
-      <td>{customerName}</td>
+      <td>{customerID}</td>
       <td>{statusOrder}</td>
       <td>{amount}</td>
 
@@ -61,12 +74,25 @@ function OrderItem(props) {
                 <FontAwesomeIcon
                   icon={faCircleCheck}
                   className={cx("orders-action-check")}
+                  onClick={handleConfirm}
                 />
               </button>
               <button className={cx("orders-body-action")}>
                 <FontAwesomeIcon
                   icon={faCircleXmark}
                   className={cx("orders-action-xmark")}
+                  onClick={handleReject}
+                />
+              </button>
+            </div>
+          )}
+          {statusOrder === "Confirm" && (
+            <div>
+              <button className={cx("orders-body-action")}>
+                <FontAwesomeIcon
+                  icon={faCircleXmark}
+                  className={cx("orders-action-xmark")}
+                  onClick={handleReject}
                 />
               </button>
             </div>

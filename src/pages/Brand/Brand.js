@@ -44,7 +44,7 @@ function Brand() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8080/api/brand", brand)
+      .post("http://localhost:8080/api/brand/create", brand)
       .then((res) => {
         setBrand({
           logo: "",

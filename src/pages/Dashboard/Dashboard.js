@@ -9,20 +9,65 @@ import {
 import Overview from "./Overview/Overview";
 import Revenue from "./Revenue/Revenue";
 import DonutChart from "react-donut-chart";
+import axios from "axios";
+import { useState } from "react";
 
 import classNames from "classnames/bind";
 import styles from "./Dashboard.module.scss";
+import { useEffect } from "react";
 
 const cx = classNames.bind(styles);
 
 function Dashboard() {
+  const [orders, setOrders] = useState([]);
+  const [customers, setCustomer] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/checkout")
+      .then((res) => {
+        setOrders(res.data.orders);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [orders]);
+
+  //lay danh sach khach hang
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:8080/api/user")
+  //     .then((res) => {
+  //       setOrders(res.data.orders);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, [customers]);
+
+  const VND = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
   return (
     <div>
       <Row>
-        <Overview name="Total orders" quantity="2625">
+        <Overview name="Total orders" quantity={orders.length}>
           <FontAwesomeIcon icon={faStar} />
         </Overview>
-        <Overview name="Total sales" quantity="2625">
+        <Overview
+          name="Total sales"
+          quantity={VND.format(
+            orders.reduce((total, order) => {
+              return (
+                total +
+                order.order.reduce((total, ord) => {
+                  return total + ord.price * ord.quantity;
+                }, 0)
+              );
+            }, 0)
+          )}
+        >
           <FontAwesomeIcon icon={faMoneyBill} />
         </Overview>
         <Overview name="Total customers" quantity="2625">
