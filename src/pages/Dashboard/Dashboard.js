@@ -20,7 +20,8 @@ const cx = classNames.bind(styles);
 
 function Dashboard() {
   const [orders, setOrders] = useState([]);
-  const [customers, setCustomer] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [revenue, setRevenue] = useState([]);
 
   useEffect(() => {
     axios
@@ -34,16 +35,25 @@ function Dashboard() {
   }, [orders]);
 
   //lay danh sach khach hang
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:8080/api/user")
-  //     .then((res) => {
-  //       setOrders(res.data.orders);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, [customers]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/admin/getUsers")
+      .then((res) => {
+        setCustomers(res.data.users);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [customers]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/admin/revenue")
+      .then((res) => {
+        setRevenue(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, [revenue]);
 
   const VND = new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -58,19 +68,14 @@ function Dashboard() {
         <Overview
           name="Total sales"
           quantity={VND.format(
-            orders.reduce((total, order) => {
-              return (
-                total +
-                order.order.reduce((total, ord) => {
-                  return total + ord.price * ord.quantity;
-                }, 0)
-              );
+            revenue.reduce((total, reve) => {
+              return total + reve.revenue;
             }, 0)
           )}
         >
           <FontAwesomeIcon icon={faMoneyBill} />
         </Overview>
-        <Overview name="Total customers" quantity="2625">
+        <Overview name="Total customers" quantity={customers.length}>
           <FontAwesomeIcon icon={faUsers} />
         </Overview>
       </Row>

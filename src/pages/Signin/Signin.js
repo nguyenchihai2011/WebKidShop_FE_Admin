@@ -50,7 +50,7 @@ function Signin() {
         if (radioValue === "1") navigate("/staff/dashboard");
         else navigate("/admin/dashboard");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => alert("Tên tài khoản hoặc mật khẩu không chính xác!"));
   };
 
   return (

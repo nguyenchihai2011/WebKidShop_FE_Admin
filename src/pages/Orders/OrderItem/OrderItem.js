@@ -15,6 +15,7 @@ const cx = classNames.bind(styles);
 function OrderItem(props) {
   const { idOrder, dateOrder, customerID, statusOrder, amount } = props;
 
+  // eslint-disable-next-line
   const [date, setDate] = useState(new Date(dateOrder));
 
   const handleConfirm = (e) => {
@@ -29,19 +30,21 @@ function OrderItem(props) {
         window.location.reload();
       })
       .catch((err) => {
-        console.log(err);
+        handleReject();
       });
   };
 
   const handleReject = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     axios
       .patch(`http://localhost:8080/api/checkout/${idOrder}/status`, {
         status: "Reject",
       })
       .then((res) => {
-        alert("Đơn hàng bị huỷ thành công!");
+        alert(
+          "Không đủ điều kiện đáp ứng đơn hàng! Đơn hàng bị huỷ thành công!"
+        );
         window.location.reload();
       })
       .catch((err) => {

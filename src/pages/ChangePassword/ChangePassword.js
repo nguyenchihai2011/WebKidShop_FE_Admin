@@ -21,7 +21,10 @@ function ChangePassword() {
   const handleEditInfo = (e) => {
     e.preventDefault();
 
-    console.log(auth.staff.password);
+    if (password !== confirmPassword) {
+      alert("Mật khẩu xác nhận chưa chính xác!");
+      return;
+    }
 
     const isMatch = bcrypt.compareSync(curPassword, auth.staff.password); // true
 
@@ -30,10 +33,6 @@ function ChangePassword() {
       return;
     }
 
-    if (password !== confirmPassword) {
-      alert("Mật khẩu xác nhận chưa chính xác!");
-      return;
-    }
     axios
       .put(`http://localhost:8080/api/admin/staff/${auth.staff._id}`, {
         password,
