@@ -27,6 +27,10 @@ function Admin({ children }) {
   let title = location.pathname.slice(location.pathname.lastIndexOf("/"));
   title = title.slice(1);
 
+  if (location.pathname.indexOf("/admin/orders/") === 0) {
+    title = "Order Details";
+  }
+
   const navigate = useNavigate();
   // eslint-disable-next-line
   const [auth, setAuth] = useAuth();

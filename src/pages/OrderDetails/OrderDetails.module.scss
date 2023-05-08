@@ -1,0 +1,39 @@
+.orders {
+  padding: 20px;
+}
+
+.orders-row {
+  margin-bottom: 20px;
+}
+
+.orders-col {
+  display: flex;
+  align-items: center;
+}
+
+.orders-lable {
+  font-size: 2rem;
+  margin-bottom: 0px;
+}
+
+.orders-table {
+  vertical-align: middle;
+}
+
+.back-btn {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+
+  & > button {
+    color: #fff;
+    background-color: var(--primary-color);
+    padding: 12px 16px;
+    display: block;
+    border: none;
+
+    &:hover {
+      color: #e4e4e4;
+    }
+  }
+}

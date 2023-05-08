@@ -22,7 +22,7 @@ function Orders() {
     axios
       .get("http://localhost:8080/api/checkout")
       .then((res) => {
-        setOrders(res.data.orders);
+        setOrders(res.data.orders.reverse());
         setCurOrders(res.data.orders.slice(0, 10));
         setPageCount(Math.ceil(res.data.orders.length / 10));
       })

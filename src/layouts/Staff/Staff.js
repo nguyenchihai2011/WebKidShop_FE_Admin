@@ -28,6 +28,10 @@ function Staff({ children }) {
   let title = location.pathname.slice(location.pathname.lastIndexOf("/"));
   title = title.slice(1);
 
+  if (location.pathname.indexOf("/staff/orders/") === 0) {
+    title = "Order Details";
+  }
+
   const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
 

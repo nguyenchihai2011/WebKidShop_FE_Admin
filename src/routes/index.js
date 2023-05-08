@@ -12,6 +12,7 @@ import Promotion from "../pages/Promotion/Promotion";
 import Blog from "../pages/Blog/Blog";
 import StaffManage from "../pages/StaffManage/StaffManage";
 import ChangePassword from "../pages/ChangePassword/ChangePassword";
+import OrderDetails from "../pages/OrderDetails/OrderDetails";
 
 const publicRoutes = [
   { path: "/", component: Signin, layout: null },
@@ -28,6 +29,11 @@ const publicRoutes = [
     component: ChangePassword,
     layout: Staff,
   },
+  {
+    path: "/staff/orders/:idOrder",
+    component: OrderDetails,
+    layout: Staff,
+  },
   { path: "/admin/dashboard", component: Dashboard, layout: Admin },
   { path: "/admin/orders", component: Orders, layout: Admin },
   { path: "/admin/category", component: Category, layout: Admin },
@@ -37,6 +43,11 @@ const publicRoutes = [
   { path: "/admin/promotion", component: Promotion, layout: Admin },
   { path: "/admin/blog", component: Blog, layout: Admin },
   { path: "/admin/staff-manage", component: StaffManage, layout: Admin },
+  {
+    path: "/admin/orders/:idOrder",
+    component: OrderDetails,
+    layout: Admin,
+  },
 ];
 
 const privateRoutes = [];
