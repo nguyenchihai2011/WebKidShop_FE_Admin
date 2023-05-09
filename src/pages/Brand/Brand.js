@@ -43,6 +43,21 @@ function Brand() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (brand.logo === "") {
+      alert("Bạn chưa nhập đường dẫn hình ảnh thương hiệu!");
+      return;
+    }
+
+    if (brand.logo.indexOf("//") === -1) {
+      alert("Đường dẫn không hợp lệ!");
+      return;
+    }
+
+    if (brand.name === "") {
+      alert("Bạn chưa tên thương hiệu!");
+      return;
+    }
+
     axios
       .post("http://localhost:8080/api/brand/create", brand)
       .then((res) => {
