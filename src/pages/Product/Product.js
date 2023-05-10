@@ -406,8 +406,10 @@ function Product() {
               <th>Size</th>
               <th>Color</th>
               <th>Price</th>
+              <th>Price Discount</th>
               <th>Stock</th>
               <th>ArrivalDate</th>
+              <th>Promotion</th>
               <th>Action</th>
             </tr>
           </thead>

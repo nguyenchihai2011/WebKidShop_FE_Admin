@@ -54,7 +54,7 @@ function Orders() {
             <tr>
               <th>OrderID</th>
               <th>Date</th>
-              <th>Customer ID</th>
+              <th>Customer Name</th>
               <th>Status</th>
               <th>Amount</th>
               <th>Action</th>

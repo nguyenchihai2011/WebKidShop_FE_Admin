@@ -65,6 +65,8 @@ function ProductItem(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [promotionL, setPromotionL] = useState([]);
+
   const onChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
@@ -144,6 +146,7 @@ function ProductItem(props) {
     axios
       .get("http://localhost:8080/api/promotion")
       .then((res) => {
+        setPromotionL(res.data);
         var data = res.data.filter((item) => {
           return new Date(item.startDay) >= new Date();
         });
@@ -151,6 +154,13 @@ function ProductItem(props) {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  const setDiscount = (promotionID) => {
+    const data = promotionL.filter((promo) => {
+      return promo._id === promotionID;
+    });
+    return data[0]?.discount;
+  };
 
   return (
     <tr>
@@ -160,6 +170,11 @@ function ProductItem(props) {
       <td>{productSize}</td>
       <td>{productColor}</td>
       <td>{price}</td>
+      <td>
+        {setDiscount(promotion)
+          ? (price * setDiscount(promotion)) / 100
+          : price}
+      </td>
       <td>{stock}</td>
       <td>
         {arrDay.getDate() +
@@ -168,6 +183,7 @@ function ProductItem(props) {
           "-" +
           arrDay.getFullYear()}
       </td>
+      <td>{setDiscount(promotion) ? `${setDiscount(promotion)}%` : ""}</td>
 
       <td>
         <button className={cx("product-body-action")}>
